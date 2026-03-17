@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maison Élan — Peruvian Pima Essentials</title>
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* ── PAGE-SPECIFIC STYLES FOR index.html ── */
+
+    /* Hero */
+    .hero {
+      height: 100vh;
+      background: var(--charcoal);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    /* Subtle textile grain overlay */
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      font-size: 0.6rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 22px;
+      animation: fadeUp 0.7s var(--ease) 0.2s both;
+    }
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(2.8rem, 6vw, 5.2rem);
+      font-weight: 300;
+      line-height: 1.1;
+      color: var(--off-white);
+      letter-spacing: -0.01em;
+      max-width: 680px;
+      animation: fadeUp 0.7s var(--ease) 0.35s both;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: rgba(247,245,240,0.55);
+    }
+    .hero-sub {
+      font-size: 0.78rem;
+      color: rgba(247,245,240,0.45);
+      margin-top: 20px;
+      letter-spacing: 0.08em;
+      animation: fadeUp 0.7s var(--ease) 0.48s both;
+    }
+    .hero-cta {
+      margin-top: 44px;
+      animation: fadeUp 0.7s var(--ease) 0.6s both;
+    }
+    .hero-cta a {
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--off-white);
+      border-bottom: 1px solid rgba(247,245,240,0.4);
+      padding-bottom: 4px;
+      transition: border-color 0.3s, color 0.3s;
+    }
+    .hero-cta a:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* Scroll indicator */
+    .hero-scroll {
+      position: absolute; bottom: 36px;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      animation: fadeUp 0.7s var(--ease) 0.8s both;
+    }
+    .hero-scroll span {
+      font-size: 0.55rem; letter-spacing: 0.22em;
+      text-transform: uppercase; color: rgba(247,245,240,0.3);
+    }
+    .scroll-line {
+      width: 1px; height: 40px;
+      background: rgba(247,245,240,0.2);
+      position: relative; overflow: hidden;
+    }
+    .scroll-line::after {
+      content: '';
+      position: absolute; top: -100%; left: 0;
+      width: 100%; height: 100%;
+      background: var(--gold);
+      animation: scrollDrop 2s ease-in-out infinite;
+    }
+    @keyframes scrollDrop {
+      0%   { top: -100%; }
+      100% { top: 200%; }
+    }
+
+    /* Heritage strip */
+    .heritage-strip {
+      background: var(--cream);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      padding: 0 var(--page-padding);
+    }
+    .heritage-item {
+      flex: 1;
+      display: flex; align-items: center; gap: 16px;
+      padding: 28px 0;
+      border-right: 1px solid var(--border);
+    }
+    .heritage-item:last-child { border-right: none; padding-left: 40px; }
+    .heritage-item:not(:first-child) { padding-left: 40px; }
+    .heritage-num {
+      font-family: var(--serif);
+      font-size: 2rem;
+      font-weight: 300;
+      color: var(--charcoal);
+      line-height: 1;
+    }
+    .heritage-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--charcoal-lt);
+      line-height: 1.8;
+    }
+    .heritage-label strong {
+      display: block;
+      font-size: 0.72rem;
+      color: var(--charcoal-mid);
+      font-weight: 400;
+      margin-bottom: 2px;
+    }
+
+    /* Story section */
+    .story {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 580px;
+      padding: 80px var(--page-padding);
+      gap: 80px;
+      align-items: center;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .story-visual {
+      border-radius: 6px;
+      overflow: hidden;
+      background: var(--cream);
+      height: 460px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    /* Fabric texture art */
+    .fabric-art {
+      width: 70%; height: 70%;
+    }
+    .story-eyebrow {
+      font-size: 0.6rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--forest);
+      margin-bottom: 16px;
+    }
+    .story-title {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      font-weight: 300;
+      line-height: 1.2;
+      color: var(--charcoal);
+      margin-bottom: 24px;
+    }
+    .story-body {
+      font-size: 0.88rem;
+      line-height: 1.95;
+      color: var(--charcoal-mid);
+      max-width: 440px;
+    }
+    .story-body p + p { margin-top: 16px; }
+    .story-link {
+      display: inline-flex;
+      align-items: center; gap: 8px;
+      margin-top: 32px;
+      font-size: 0.63rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--charcoal-mid);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 4px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .story-link:hover { color: var(--charcoal); border-color: var(--charcoal); }
+    .story-link svg {
+      width: 14px; height: 14px;
+      stroke: currentColor; fill: none; stroke-width: 1.5;
+    }
+
+    /* Pillars row */
+    .pillars {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .pillar {
+      background: var(--off-white);
+      padding: 48px var(--page-padding);
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    .pillar svg {
+      width: 28px; height: 28px;
+      stroke: var(--forest); fill: none;
+      stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+    }
+    .pillar-title {
+      font-family: var(--serif);
+      font-size: 1.2rem;
+      font-weight: 400;
+    }
+    .pillar-body {
+      font-size: 0.76rem;
+      line-height: 1.85;
+      color: var(--charcoal-mid);
+      max-width: 280px;
+    }
+
+    /* Featured drop */
+    .featured {
+      padding: 80px var(--page-padding) 100px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .featured-header {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-bottom: 48px;
+    }
+    .featured-title {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 3vw, 2.8rem);
+      font-weight: 300;
+    }
+    .featured-title em {
+      font-style: italic;
+      color: var(--charcoal-mid);
+    }
+
+    /* Asymmetric 3-card layout (editorial) */
+    .featured-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr 1fr;
+      grid-template-rows: auto;
+      gap: 20px;
+      align-items: start;
+    }
+    .featured-grid .card:first-child {
+      grid-row: 1 / 2;
+      margin-top: 0;
+    }
+    .featured-grid .card:nth-child(2) {
+      margin-top: 60px; /* offset for editorial stagger */
+    }
+    .featured-grid .card:nth-child(3) {
+      margin-top: 120px;
+    }
+
+    @media (max-width: 900px) {
+      .story { grid-template-columns: 1fr; gap: 40px; }
+      .story-visual { height: 300px; }
+      .heritage-strip { flex-direction: column; }
+      .heritage-item { border-right: none; border-bottom: 1px solid var(--border); padding-left: 0 !important; }
+      .heritage-item:last-child { border-bottom: none; }
+      .pillars { grid-template-columns: 1fr; }
+      .featured-grid { grid-template-columns: 1fr 1fr; }
+      .featured-grid .card { margin-top: 0 !important; }
+      .featured-grid .card:first-child { grid-column: 1 / -1; }
+    }
+    @media (max-width: 600px) {
+      .featured-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════
+       NAV  (same markup on every page)
+  ════════════════════════════════════ -->
+  <nav class="nav" id="mainNav">
+    <ul class="nav-left">
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="shop.html#sleep-edit">Sleep Edit</a></li>
+    </ul>
+
+    <a href="index.html" class="nav-logo">Maison <span>É</span>lan</a>
+
+    <div class="nav-right">
+      <button class="nav-icon-btn" title="Account" onclick="location.href='account.html'">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </button>
+      <button class="nav-icon-btn" title="Cart" onclick="location.href='checkout.html'">
+        <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </button>
+      <button class="nav-hamburger" id="navHamburger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile drawer -->
+  <div class="nav-overlay" id="navOverlay"></div>
+  <nav class="nav-drawer" id="navDrawer">
+    <button class="nav-drawer-close" id="navClose">✕</button>
+    <a href="shop.html">The Tee</a>
+    <a href="shop.html">Sleep Edit</a>
+    <a href="shop.html">Lounge</a>
+    <a href="shop.html">Outerwear</a>
+    <a href="account.html">Account</a>
+    <a href="checkout.html">Cart</a>
+    <div class="nav-drawer-footer">🇵🇪 Ships from Lima, Peru</div>
+  </nav>
+
+  <!-- ═══════════════════════════════════
+       HERO
+  ════════════════════════════════════ -->
+  <section class="hero">
+    <div class="hero-eyebrow">SS 2025 — Lima, Peru</div>
+    <h1 class="hero-title">
+      Grown in Peru.<br>
+      <em>Worn for Life.</em>
+    </h1>
+    <p class="hero-sub">100% Pima Cotton · Garment-dyed · OEKO-TEX® Certified</p>
+    <div class="hero-cta">
+      <a href="shop.html">Explore the Edit →</a>
+    </div>
+    <div class="hero-scroll">
+      <div class="scroll-line"></div>
+      <span>Scroll</span>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════
+       HERITAGE STRIP
+  ════════════════════════════════════ -->
+  <div class="heritage-strip">
+    <div class="heritage-item reveal">
+      <div class="heritage-num">180</div>
+      <div class="heritage-label">
+        <strong>GSM Weight</strong>
+        Heavyweight Pima
+      </div>
+    </div>
+    <div class="heritage-item reveal">
+      <div class="heritage-num">3×</div>
+      <div class="heritage-label">
+        <strong>Longer Fibre</strong>
+        vs standard cotton
+      </div>
+    </div>
+    <div class="heritage-item reveal">
+      <div class="heritage-num">30+</div>
+      <div class="heritage-label">
+        <strong>Wash Guarantee</strong>
+        No shrink, no pill
+      </div>
+    </div>
+    <div class="heritage-item reveal">
+      <div class="heritage-num">100%</div>
+      <div class="heritage-label">
+        <strong>OEKO-TEX® Certified</strong>
+        Free from harmful substances
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════
+       THE STORY
+  ════════════════════════════════════ -->
+  <section class="story">
+    <div class="story-visual reveal">
+      <!-- Fabric weave illustration -->
+      <svg class="fabric-art" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="fabricGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#D4C5B0"/>
+            <stop offset="50%" style="stop-color:#C8B89E"/>
+            <stop offset="100%" style="stop-color:#B8A88E"/>
+          </linearGradient>
+        </defs>
+        <!-- Woven thread pattern -->
+        <rect width="300" height="300" fill="url(#fabricGrad)" rx="4"/>
+        <!-- Horizontal threads -->
+        <g stroke="#C0AE96" stroke-width="0.8" opacity="0.5">
+          <line x1="0" y1="15" x2="300" y2="15"/>
+          <line x1="0" y1="30" x2="300" y2="30"/>
+          <line x1="0" y1="45" x2="300" y2="45"/>
+          <line x1="0" y1="60" x2="300" y2="60"/>
+          <line x1="0" y1="75" x2="300" y2="75"/>
+          <line x1="0" y1="90" x2="300" y2="90"/>
+          <line x1="0" y1="105" x2="300" y2="105"/>
+          <line x1="0" y1="120" x2="300" y2="120"/>
+          <line x1="0" y1="135" x2="300" y2="135"/>
+          <line x1="0" y1="150" x2="300" y2="150"/>
+          <line x1="0" y1="165" x2="300" y2="165"/>
+          <line x1="0" y1="180" x2="300" y2="180"/>
+          <line x1="0" y1="195" x2="300" y2="195"/>
+          <line x1="0" y1="210" x2="300" y2="210"/>
+          <line x1="0" y1="225" x2="300" y2="225"/>
+          <line x1="0" y1="240" x2="300" y2="240"/>
+          <line x1="0" y1="255" x2="300" y2="255"/>
+          <line x1="0" y1="270" x2="300" y2="270"/>
+          <line x1="0" y1="285" x2="300" y2="285"/>
+        </g>
+        <!-- Vertical threads -->
+        <g stroke="#C0AE96" stroke-width="0.8" opacity="0.5">
+          <line x1="15" y1="0" x2="15" y2="300"/>
+          <line x1="30" y1="0" x2="30" y2="300"/>
+          <line x1="45" y1="0" x2="45" y2="300"/>
+          <line x1="60" y1="0" x2="60" y2="300"/>
+          <line x1="75" y1="0" x2="75" y2="300"/>
+          <line x1="90" y1="0" x2="90" y2="300"/>
+          <line x1="105" y1="0" x2="105" y2="300"/>
+          <line x1="120" y1="0" x2="120" y2="300"/>
+          <line x1="135" y1="0" x2="135" y2="300"/>
+          <line x1="150" y1="0" x2="150" y2="300"/>
+          <line x1="165" y1="0" x2="165" y2="300"/>
+          <line x1="180" y1="0" x2="180" y2="300"/>
+          <line x1="195" y1="0" x2="195" y2="300"/>
+          <line x1="210" y1="0" x2="210" y2="300"/>
+          <line x1="225" y1="0" x2="225" y2="300"/>
+          <line x1="240" y1="0" x2="240" y2="300"/>
+          <line x1="255" y1="0" x2="255" y2="300"/>
+          <line x1="270" y1="0" x2="270" y2="300"/>
+          <line x1="285" y1="0" x2="285" y2="300"/>
+        </g>
+        <!-- Label -->
+        <rect x="95" y="120" width="110" height="60" rx="3" fill="white" opacity="0.85" stroke="#C8B89E" stroke-width="0.5"/>
+        <text x="150" y="142" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="10" fill="#5A5A56" letter-spacing="1">MAISON ÉLAN</text>
+        <text x="150" y="158" text-anchor="middle" font-family="Jost, sans-serif" font-size="7" fill="#9A9A94" letter-spacing="2">LIMA · PERU</text>
+        <text x="150" y="172" text-anchor="middle" font-family="Jost, sans-serif" font-size="6.5" fill="#9A9A94" letter-spacing="1">100% PIMA COTTON</text>
+      </svg>
+    </div>
+
+    <div class="reveal">
+      <div class="story-eyebrow">The Heritage</div>
+      <h2 class="story-title">Cotton that grows<br>at 11,000 feet.</h2>
+      <div class="story-body">
+        <p>Pima cotton grows in the Piura region of northern Peru, in valleys shaped by the Andes and irrigated by ancient rivers. The altitude, soil, and equatorial sun produce a fibre three times the length of standard cotton — so fine it softens with every wash instead of pilling.</p>
+        <p>Our atelier sits in Lima, the King's City. Every piece is cut, sewn, and quality-checked by the same hands before it is folded, packed, and shipped directly to you in 5–8 days.</p>
+        <p>No middlemen. No markups. Just the fabric, the craft, and the distance from 11,000 feet to your door.</p>
+      </div>
+      <a href="shop.html" class="story-link">
+        Explore the full edit
+        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════
+       PILLARS
+  ════════════════════════════════════ -->
+  <div class="pillars">
+    <div class="pillar reveal">
+      <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <div class="pillar-title">Radical Transparency</div>
+      <div class="pillar-body">Every price includes duties, taxes, and shipping. No surprises at the door — what you see is exactly what you pay.</div>
+    </div>
+    <div class="pillar reveal">
+      <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      <div class="pillar-title">Source to Doorstep</div>
+      <div class="pillar-body">From the cotton fields of Piura to your address in 5–8 days. We own the full supply chain so quality never leaves our hands.</div>
+    </div>
+    <div class="pillar reveal">
+      <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+      <div class="pillar-title">Wear It 30 Times</div>
+      <div class="pillar-body">If it pills, shrinks, or fades within the first 30 washes, we replace it. This is our durability guarantee — in writing.</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════
+       FEATURED DROP
+  ════════════════════════════════════ -->
+  <section class="featured">
+    <div class="featured-header reveal">
+      <div>
+        <div class="eyebrow">SS 2025 Drop</div>
+        <div class="featured-title">The <em>Essential</em> Edit</div>
+      </div>
+      <a href="shop.html" class="btn-ghost">
+        View all pieces
+        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+
+    <!-- Cards injected by JS -->
+    <div class="featured-grid stagger" id="featuredGrid"></div>
+  </section>
+
+  <!-- ═══════════════════════════════════
+       FOOTER  (same on every page)
+  ════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="footer-brand">
+      <div class="footer-logo">Maison <span>É</span>lan</div>
+      <p>Quiet luxury, ethically sourced. Premium Pima cotton essentials crafted in Lima, Peru — shipped directly to you.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Collection</h5>
+      <ul>
+        <li><a href="shop.html">The Tee</a></li>
+        <li><a href="shop.html">Sleep Edit</a></li>
+        <li><a href="shop.html">Lounge</a></li>
+        <li><a href="shop.html">Outerwear</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Company</h5>
+      <ul>
+        <li><a href="#">Our Atelier</a></li>
+        <li><a href="#">Sustainability</a></li>
+        <li><a href="#">Journal</a></li>
+        <li><a href="#">Press</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Support</h5>
+      <ul>
+        <li><a href="#">Size Guide</a></li>
+        <li><a href="#">Shipping Info</a></li>
+        <li><a href="account.html">Track Order</a></li>
+        <li><a href="#">Returns</a></li>
+      </ul>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Maison Élan. Crafted in Lima, Peru.</p>
+      <p>Privacy · Terms · Accessibility</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    /* ── index.html specific script ── */
+
+    /* Render the 3 featured cards */
+    function buildCard(product) {
+      const swatches = product.colors.map(c =>
+        `<div class="card-swatch" style="background:${c.hex};${c.border ? 'border:1px solid #ccc' : ''}"></div>`
+      ).join('');
+
+      const tagHtml = product.tag
+        ? `<div class="card-tag ${product.tagStyle}">${product.tag}</div>` : '';
+
+      return `
+        <div class="card anim-fade-up" onclick="location.href='product.html?id=${product.id}'">
+          ${tagHtml}
+          <div class="card-img">
+            ${buildGarmentSVG(product.id, product.colors[0].hex)}
+          </div>
+          <button class="card-quick-add" onclick="event.stopPropagation();quickAdd('${product.id}')">
+            Quick Add
+          </button>
+          <div class="card-info">
+            <div class="card-category">${product.category}</div>
+            <div class="card-name">${product.name}</div>
+            <div class="card-feel">${product.feel}</div>
+            <div class="card-footer">
+              <div class="card-price">$${product.price}</div>
+              <div class="card-swatches">${swatches}</div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    /* Minimal garment SVG per product type */
+    function buildGarmentSVG(id, color) {
+      const c1 = color;
+      const c2 = shadeColor(color, -20);
+      if (id.includes('TEE') || id.includes('OVR')) {
+        return `<svg viewBox="0 0 200 240" style="width:65%">
+          <defs><linearGradient id="g${id}" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:${c1}"/>
+            <stop offset="100%" style="stop-color:${c2}"/>
+          </linearGradient></defs>
+          <path d="M40 88L30 60L48 48L66 66L100 60L134 66L152 48L170 60L160 88L156 210Q156 220 144 220L56 220Q44 220 44 210Z" fill="url(#g${id})"/>
+          <path d="M66 66Q83 55 100 52Q117 55 134 66" fill="none" stroke="${c2}" stroke-width="1"/>
+          <path d="M30 60L10 95Q7 107 16 110L44 100L40 88" fill="url(#g${id})" stroke="${c2}" stroke-width="0.8"/>
+          <path d="M170 60L190 95Q193 107 184 110L156 100L160 88" fill="url(#g${id})" stroke="${c2}" stroke-width="0.8"/>
+        </svg>`;
+      } else if (id.includes('HOD')) {
+        return `<svg viewBox="0 0 200 240" style="width:65%">
+          <defs><linearGradient id="g${id}" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:${c1}"/>
+            <stop offset="100%" style="stop-color:${c2}"/>
+          </linearGradient></defs>
+          <path d="M50 44L16 36L10 56Q6 75 18 77L46 70L46 110L50 220Q50 230 60 230L140 230Q150 230 150 220L154 110L154 70L182 77Q194 75 190 56L184 36L150 44Q140 30 132 24L100 20L68 24Q60 30 50 44Z" fill="url(#g${id})" stroke="${c2}" stroke-width="0.8"/>
+          <path d="M70 24Q80 16 100 14Q120 16 130 24L124 40L100 34L76 40Z" fill="${shadeColor(c1,-10)}" stroke="${c2}" stroke-width="0.6"/>
+          <path d="M72 132Q72 148 100 148Q128 148 128 132L128 120Q128 116 122 116L78 116Q72 116 72 120Z" fill="${c2}" stroke="${c2}" stroke-width="0.5"/>
+        </svg>`;
+      } else if (id.includes('SHO')) {
+        return `<svg viewBox="0 0 200 200" style="width:65%">
+          <defs><linearGradient id="g${id}" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:${c1}"/>
+            <stop offset="100%" style="stop-color:${c2}"/>
+          </linearGradient></defs>
+          <path d="M30 40L30 130Q28 160 55 164L88 164Q100 164 100 148L100 110L100 148Q100 164 112 164L145 164Q172 160 170 130L170 40Z" fill="url(#g${id})"/>
+          <rect x="30" y="34" width="140" height="14" rx="3" fill="${c2}"/>
+          <line x1="85" y1="41" x2="115" y2="41" stroke="${shadeColor(c1,20)}" stroke-width="1.5" opacity="0.8"/>
+        </svg>`;
+      } else {
+        return `<svg viewBox="0 0 200 200" style="width:60%">
+          <defs><linearGradient id="g${id}" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:${c1}"/>
+            <stop offset="100%" style="stop-color:${c2}"/>
+          </linearGradient></defs>
+          <ellipse cx="100" cy="100" rx="70" ry="70" fill="url(#g${id})" stroke="${c2}" stroke-width="1"/>
+          <text x="100" y="106" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="11" fill="${c2}" letter-spacing="1">ACCESSORY</text>
+        </svg>`;
+      }
+    }
+
+    /* Darken/lighten a hex color by amount */
+    function shadeColor(hex, amount) {
+      hex = hex.replace('#','');
+      if (hex.length === 3) hex = hex.split('').map(c=>c+c).join('');
+      let r = parseInt(hex.slice(0,2),16) + amount;
+      let g = parseInt(hex.slice(2,4),16) + amount;
+      let b = parseInt(hex.slice(4,6),16) + amount;
+      r = Math.max(0,Math.min(255,r));
+      g = Math.max(0,Math.min(255,g));
+      b = Math.max(0,Math.min(255,b));
+      return '#' + [r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('');
+    }
+
+    /* Quick add (uses first available size + first color) */
+    function quickAdd(productId) {
+      const p = getProduct(productId);
+      if (!p) return;
+      const size  = p.sizes.find(s => !p.unavailableSizes.includes(s)) || p.sizes[0];
+      const color = p.colors[0].name;
+      addToCart(productId, size, color);
+    }
+
+    /* Render featured products on page load */
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadProducts();
+      const grid = document.getElementById('featuredGrid');
+      const featured = PRODUCTS.slice(0, 3);
+      grid.innerHTML = featured.map(buildCard).join('');
+    });
+  </script>
+</body>
+</html>

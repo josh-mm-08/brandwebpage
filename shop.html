@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop the Edit — Maison Élan</title>
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* ── PAGE-SPECIFIC STYLES FOR shop.html ── */
+
+    .shop-wrap {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 32px var(--page-padding) 100px;
+    }
+
+    /* Page header */
+    .shop-header {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-bottom: 36px;
+    }
+    .shop-title {
+      font-family: var(--serif);
+      font-size: 2.4rem;
+      font-weight: 300;
+    }
+    .shop-count {
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--charcoal-lt);
+      margin-top: 6px;
+    }
+
+    /* Category tabs */
+    .cat-tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 28px;
+      overflow-x: auto;
+    }
+    .cat-tab {
+      background: none;
+      border: none;
+      padding: 12px 22px 14px;
+      font-size: 0.65rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--charcoal-lt);
+      position: relative;
+      white-space: nowrap;
+      transition: color 0.2s;
+    }
+    .cat-tab::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 0; right: 0;
+      height: 2px;
+      background: var(--charcoal);
+      transform: scaleX(0);
+      transition: transform 0.25s var(--ease);
+    }
+    .cat-tab.active { color: var(--charcoal); }
+    .cat-tab.active::after { transform: scaleX(1); }
+    .cat-tab:hover { color: var(--charcoal-mid); }
+
+    /* Filter row */
+    .filter-row {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      margin-bottom: 36px;
+      flex-wrap: wrap;
+    }
+    .filter-toggle-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 8px 16px;
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--charcoal-mid);
+      display: flex; align-items: center; gap: 8px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .filter-toggle-btn:hover { border-color: var(--charcoal); color: var(--charcoal); }
+    .filter-toggle-btn svg {
+      width: 14px; height: 14px;
+      stroke: currentColor; fill: none; stroke-width: 1.5;
+    }
+    .active-filters {
+      display: flex; gap: 8px; flex-wrap: wrap; flex: 1;
+    }
+    .filter-chip {
+      background: var(--charcoal);
+      color: var(--off-white);
+      font-size: 0.58rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 20px;
+      display: flex; align-items: center; gap: 6px;
+      cursor: pointer;
+    }
+    .filter-chip:hover { background: var(--charcoal-mid); }
+
+    /* Grid toggle */
+    .grid-toggle {
+      display: flex; gap: 4px; margin-left: auto;
+    }
+    .grid-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      width: 34px; height: 34px;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .grid-btn.active { background: var(--charcoal); border-color: var(--charcoal); }
+    .grid-btn svg { width: 14px; height: 14px; stroke: var(--charcoal-mid); fill: none; stroke-width: 1.5; }
+    .grid-btn.active svg { stroke: var(--off-white); }
+
+    /* Filter panel (collapsible) */
+    .filter-panel {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s var(--ease), padding 0.3s;
+      margin-bottom: 0;
+    }
+    .filter-panel.open {
+      max-height: 200px;
+      padding: 24px 28px;
+      margin-bottom: 28px;
+    }
+    .filter-groups {
+      display: flex; gap: 48px; flex-wrap: wrap;
+    }
+    .filter-group h4 {
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--charcoal-lt);
+      margin-bottom: 12px;
+    }
+    .filter-options {
+      display: flex; gap: 8px; flex-wrap: wrap;
+    }
+    .filter-opt {
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      color: var(--charcoal-mid);
+      background: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .filter-opt:hover { border-color: var(--charcoal-mid); }
+    .filter-opt.active {
+      background: var(--charcoal);
+      color: var(--off-white);
+      border-color: var(--charcoal);
+    }
+
+    /* Product grid */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      transition: grid-template-columns 0.3s var(--ease);
+    }
+    .product-grid.two-col {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 28px;
+    }
+
+    /* Empty state */
+    .empty-state {
+      grid-column: 1 / -1;
+      padding: 80px 0;
+      text-align: center;
+      display: none;
+    }
+    .empty-state.visible { display: block; }
+    .empty-title {
+      font-family: var(--serif);
+      font-size: 1.8rem;
+      font-weight: 300;
+      margin-bottom: 10px;
+    }
+    .empty-sub {
+      font-size: 0.76rem;
+      color: var(--charcoal-lt);
+      margin-bottom: 28px;
+    }
+    .waitlist-form {
+      display: inline-flex; gap: 0; max-width: 360px;
+    }
+    .waitlist-form input {
+      flex: 1;
+      height: 46px; padding: 0 16px;
+      border: 1px solid var(--border);
+      border-right: none;
+      border-radius: 4px 0 0 4px;
+      font-family: var(--sans);
+      font-size: 0.8rem;
+      outline: none;
+    }
+    .waitlist-form button {
+      height: 46px; padding: 0 20px;
+      background: var(--charcoal);
+      color: var(--off-white);
+      border: none;
+      border-radius: 0 4px 4px 0;
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    /* Load more */
+    .load-more-wrap {
+      text-align: center;
+      margin-top: 60px;
+    }
+    .load-more-btn {
+      background: none;
+      border: none;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--charcoal-mid);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 3px;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .load-more-btn:hover { color: var(--charcoal); border-color: var(--charcoal); }
+
+    @media (max-width: 900px) {
+      .product-grid { grid-template-columns: repeat(2, 1fr); }
+      .product-grid.two-col { grid-template-columns: 1fr; }
+      .shop-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav" id="mainNav">
+    <ul class="nav-left">
+      <li><a href="shop.html" class="active">Shop</a></li>
+      <li><a href="shop.html#sleep-edit">Sleep Edit</a></li>
+    </ul>
+    <a href="index.html" class="nav-logo">Maison <span>É</span>lan</a>
+    <div class="nav-right">
+      <button class="nav-icon-btn" onclick="location.href='account.html'">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </button>
+      <button class="nav-icon-btn" onclick="location.href='checkout.html'">
+        <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        <span class="cart-badge">0</span>
+      </button>
+      <button class="nav-hamburger" id="navHamburger"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+  <div class="nav-overlay" id="navOverlay"></div>
+  <nav class="nav-drawer" id="navDrawer">
+    <button class="nav-drawer-close" id="navClose">✕</button>
+    <a href="shop.html">The Tee</a>
+    <a href="shop.html">Sleep Edit</a>
+    <a href="shop.html">Lounge</a>
+    <a href="shop.html">Outerwear</a>
+    <a href="account.html">Account</a>
+    <a href="checkout.html">Cart</a>
+    <div class="nav-drawer-footer">🇵🇪 Ships from Lima, Peru</div>
+  </nav>
+  <div class="nav-spacer"></div>
+
+  <!-- SHOP -->
+  <div class="shop-wrap">
+
+    <!-- Header -->
+    <div class="shop-header reveal">
+      <div>
+        <div class="eyebrow">SS 2025</div>
+        <h1 class="shop-title">The Edit</h1>
+        <div class="shop-count" id="productCount">6 pieces</div>
+      </div>
+    </div>
+
+    <!-- Category tabs -->
+    <div class="cat-tabs" id="catTabs">
+      <button class="cat-tab active" data-cat="All">All</button>
+      <button class="cat-tab" data-cat="The Tee">The Tee</button>
+      <button class="cat-tab" data-cat="Sleep Edit">Sleep Edit</button>
+      <button class="cat-tab" data-cat="Lounge">Lounge</button>
+      <button class="cat-tab" data-cat="Outerwear">Outerwear</button>
+      <button class="cat-tab" data-cat="Accessories">Accessories</button>
+    </div>
+
+    <!-- Filter row -->
+    <div class="filter-row">
+      <button class="filter-toggle-btn" id="filterToggleBtn" onclick="toggleFilters()">
+        <svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+        Filters
+      </button>
+      <div class="active-filters" id="activeFilters"></div>
+      <div class="grid-toggle">
+        <button class="grid-btn active" id="gridBtn4" onclick="setGrid(4)" title="4-column">
+          <svg viewBox="0 0 14 14"><rect x="1" y="1" width="5" height="5" rx="0.5"/><rect x="8" y="1" width="5" height="5" rx="0.5"/><rect x="1" y="8" width="5" height="5" rx="0.5"/><rect x="8" y="8" width="5" height="5" rx="0.5"/></svg>
+        </button>
+        <button class="grid-btn" id="gridBtn2" onclick="setGrid(2)" title="2-column">
+          <svg viewBox="0 0 14 14"><rect x="1" y="1" width="5" height="12" rx="0.5"/><rect x="8" y="1" width="5" height="12" rx="0.5"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Filter panel -->
+    <div class="filter-panel" id="filterPanel">
+      <div class="filter-groups">
+        <div class="filter-group">
+          <h4>Hand Feel</h4>
+          <div class="filter-options">
+            <button class="filter-opt" data-filter="feel" data-val="Light">Light</button>
+            <button class="filter-opt" data-filter="feel" data-val="Midweight">Midweight</button>
+            <button class="filter-opt" data-filter="feel" data-val="Heavyweight">Heavyweight</button>
+          </div>
+        </div>
+        <div class="filter-group">
+          <h4>Occasion</h4>
+          <div class="filter-options">
+            <button class="filter-opt" data-filter="occasion" data-val="Sleep">Sleep</button>
+            <button class="filter-opt" data-filter="occasion" data-val="Lounge">Lounge</button>
+            <button class="filter-opt" data-filter="occasion" data-val="Everyday">Everyday</button>
+          </div>
+        </div>
+        <div class="filter-group">
+          <h4>Size</h4>
+          <div class="filter-options">
+            <button class="filter-opt" data-filter="size" data-val="XS">XS</button>
+            <button class="filter-opt" data-filter="size" data-val="S">S</button>
+            <button class="filter-opt" data-filter="size" data-val="M">M</button>
+            <button class="filter-opt" data-filter="size" data-val="L">L</button>
+            <button class="filter-opt" data-filter="size" data-val="XL">XL</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product grid -->
+    <div class="product-grid" id="productGrid"></div>
+
+    <!-- Empty state -->
+    <div class="empty-state" id="emptyState">
+      <div class="empty-title">This colorway is on its way.</div>
+      <p class="empty-sub">Join the waitlist and be the first to know when it arrives.</p>
+      <div class="waitlist-form">
+        <input type="email" placeholder="your@email.com">
+        <button>Notify Me</button>
+      </div>
+    </div>
+
+    <!-- Load more -->
+    <div class="load-more-wrap" id="loadMoreWrap" style="display:none">
+      <button class="load-more-btn" onclick="loadMore()">Load More Pieces</button>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-brand">
+      <div class="footer-logo">Maison <span>É</span>lan</div>
+      <p>Quiet luxury, ethically sourced. Premium Pima cotton essentials crafted in Lima, Peru.</p>
+    </div>
+    <div class="footer-col"><h5>Collection</h5><ul>
+      <li><a href="#">The Tee</a></li><li><a href="#">Sleep Edit</a></li>
+      <li><a href="#">Lounge</a></li><li><a href="#">Outerwear</a></li>
+    </ul></div>
+    <div class="footer-col"><h5>Company</h5><ul>
+      <li><a href="#">Our Atelier</a></li><li><a href="#">Sustainability</a></li>
+      <li><a href="#">Journal</a></li><li><a href="#">Press</a></li>
+    </ul></div>
+    <div class="footer-col"><h5>Support</h5><ul>
+      <li><a href="#">Size Guide</a></li><li><a href="#">Shipping</a></li>
+      <li><a href="account.html">Track Order</a></li><li><a href="#">Returns</a></li>
+    </ul></div>
+    <div class="footer-bottom">
+      <p>© 2025 Maison Élan. Crafted in Lima, Peru.</p>
+      <p>Privacy · Terms · Accessibility</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    /* ── shop.html specific script ── */
+
+    let activeCategory = 'All';
+    let activeFilters  = {};
+    let visibleCount   = 8;
+
+    /* ── Render the grid ── */
+    function renderGrid() {
+      let filtered = getProductsByCategory(activeCategory);
+
+      /* Apply filters */
+      Object.entries(activeFilters).forEach(([type, val]) => {
+        if (type === 'feel')     filtered = filtered.filter(p => p.feel.includes(val));
+        if (type === 'occasion') filtered = filtered.filter(p => p.occasion === val);
+        if (type === 'size')     filtered = filtered.filter(p => p.sizes.includes(val) && !p.unavailableSizes.includes(val));
+      });
+
+      const grid  = document.getElementById('productGrid');
+      const empty = document.getElementById('emptyState');
+
+      document.getElementById('productCount').textContent =
+        `${filtered.length} piece${filtered.length !== 1 ? 's' : ''}`;
+
+      if (!filtered.length) {
+        grid.innerHTML = '';
+        empty.classList.add('visible');
+        return;
+      }
+      empty.classList.remove('visible');
+
+      const visible = filtered.slice(0, visibleCount);
+      grid.innerHTML = visible.map(buildShopCard).join('');
+
+      /* Reveal animation */
+      grid.querySelectorAll('.card').forEach((c, i) => {
+        c.style.animationDelay = (i * 0.06) + 's';
+        c.classList.add('anim-fade-up');
+      });
+
+      document.getElementById('loadMoreWrap').style.display =
+        filtered.length > visibleCount ? 'block' : 'none';
+    }
+
+    function buildShopCard(product) {
+      const swatches = product.colors.map(c =>
+        `<div class="card-swatch" style="background:${c.hex};${c.border?'border:1px solid #ccc':''}"></div>`
+      ).join('');
+      const tagHtml = product.tag
+        ? `<div class="card-tag ${product.tagStyle}">${product.tag}</div>` : '';
+
+      return `
+        <div class="card" onclick="location.href='product.html?id=${product.id}'">
+          ${tagHtml}
+          <div class="card-img">
+            ${buildGarmentSVG(product.id, product.colors[0].hex)}
+          </div>
+          <button class="card-quick-add"
+            onclick="event.stopPropagation();quickAdd('${product.id}')">
+            Quick Add
+          </button>
+          <div class="card-info">
+            <div class="card-category">${product.category}</div>
+            <div class="card-name">${product.name}</div>
+            <div class="card-feel">${product.feel}</div>
+            <div class="card-footer">
+              <div class="card-price">$${product.price}</div>
+              <div class="card-swatches">${swatches}</div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    /* ── Category tabs ── */
+    document.getElementById('catTabs').addEventListener('click', e => {
+      const btn = e.target.closest('.cat-tab');
+      if (!btn) return;
+      document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      activeCategory = btn.dataset.cat;
+      visibleCount = 8;
+      renderGrid();
+    });
+
+    /* ── Filter panel toggle ── */
+    function toggleFilters() {
+      document.getElementById('filterPanel').classList.toggle('open');
+    }
+
+    /* ── Filter options ── */
+    document.querySelectorAll('.filter-opt').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const type = btn.dataset.filter;
+        const val  = btn.dataset.val;
+
+        if (activeFilters[type] === val) {
+          delete activeFilters[type];
+          btn.classList.remove('active');
+        } else {
+          /* Remove previously active button of same type */
+          document.querySelectorAll(`.filter-opt[data-filter="${type}"]`)
+            .forEach(b => b.classList.remove('active'));
+          activeFilters[type] = val;
+          btn.classList.add('active');
+        }
+        renderActiveChips();
+        renderGrid();
+      });
+    });
+
+    function renderActiveChips() {
+      const wrap = document.getElementById('activeFilters');
+      wrap.innerHTML = Object.entries(activeFilters).map(([type, val]) =>
+        `<div class="filter-chip" onclick="removeFilter('${type}')">
+          ${val} <span>✕</span>
+        </div>`
+      ).join('');
+    }
+
+    function removeFilter(type) {
+      delete activeFilters[type];
+      document.querySelectorAll(`.filter-opt[data-filter="${type}"]`)
+        .forEach(b => b.classList.remove('active'));
+      renderActiveChips();
+      renderGrid();
+    }
+
+    /* ── Grid toggle ── */
+    function setGrid(cols) {
+      const grid = document.getElementById('productGrid');
+      grid.classList.toggle('two-col', cols === 2);
+      document.getElementById('gridBtn4').classList.toggle('active', cols === 4);
+      document.getElementById('gridBtn2').classList.toggle('active', cols === 2);
+    }
+
+    /* ── Load more ── */
+    function loadMore() { visibleCount += 4; renderGrid(); }
+
+    /* ── Quick add ── */
+    function quickAdd(id) {
+      const p    = getProduct(id);
+      const size = p.sizes.find(s => !p.unavailableSizes.includes(s)) || p.sizes[0];
+      addToCart(id, size, p.colors[0].name);
+    }
+
+    /* ── Garment SVG (shared with index.html) ── */
+    function shadeColor(hex, amount) {
+      hex = hex.replace('#','');
+      if (hex.length===3) hex = hex.split('').map(c=>c+c).join('');
+      let r=parseInt(hex.slice(0,2),16)+amount,
+          g=parseInt(hex.slice(2,4),16)+amount,
+          b=parseInt(hex.slice(4,6),16)+amount;
+      return '#'+[r,g,b].map(v=>Math.max(0,Math.min(255,v)).toString(16).padStart(2,'0')).join('');
+    }
+    function buildGarmentSVG(id, color) {
+      const c1=color, c2=shadeColor(color,-20);
+      if (id.includes('TEE')||id.includes('OVR')) return `<svg viewBox="0 0 200 240" style="width:65%"><defs><linearGradient id="g${id}" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:${c1}"/><stop offset="100%" style="stop-color:${c2}"/></linearGradient></defs><path d="M40 88L30 60L48 48L66 66L100 60L134 66L152 48L170 60L160 88L156 210Q156 220 144 220L56 220Q44 220 44 210Z" fill="url(#g${id})"/><path d="M66 66Q83 55 100 52Q117 55 134 66" fill="none" stroke="${c2}" stroke-width="1"/><path d="M30 60L10 95Q7 107 16 110L44 100L40 88" fill="url(#g${id})" stroke="${c2}" stroke-width="0.8"/><path d="M170 60L190 95Q193 107 184 110L156 100L160 88" fill="url(#g${id})" stroke="${c2}" stroke-width="0.8"/></svg>`;
+      if (id.includes('HOD')) return `<svg viewBox="0 0 200 240" style="width:65%"><defs><linearGradient id="g${id}" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:${c1}"/><stop offset="100%" style="stop-color:${c2}"/></linearGradient></defs><path d="M50 44L16 36L10 56Q6 75 18 77L46 70L46 110L50 220Q50 230 60 230L140 230Q150 230 150 220L154 110L154 70L182 77Q194 75 190 56L184 36L150 44Q140 30 132 24L100 20L68 24Q60 30 50 44Z" fill="url(#g${id})" stroke="${c2}" stroke-width="0.8"/><path d="M70 24Q80 16 100 14Q120 16 130 24L124 40L100 34L76 40Z" fill="${shadeColor(c1,-10)}" stroke="${c2}" stroke-width="0.6"/><path d="M72 132Q72 148 100 148Q128 148 128 132L128 120Q128 116 122 116L78 116Q72 116 72 120Z" fill="${c2}" stroke="${c2}" stroke-width="0.5"/></svg>`;
+      if (id.includes('SHO')) return `<svg viewBox="0 0 200 200" style="width:65%"><defs><linearGradient id="g${id}" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:${c1}"/><stop offset="100%" style="stop-color:${c2}"/></linearGradient></defs><path d="M30 40L30 130Q28 160 55 164L88 164Q100 164 100 148L100 110L100 148Q100 164 112 164L145 164Q172 160 170 130L170 40Z" fill="url(#g${id})"/><rect x="30" y="34" width="140" height="14" rx="3" fill="${c2}"/><line x1="85" y1="41" x2="115" y2="41" stroke="${shadeColor(c1,20)}" stroke-width="1.5" opacity="0.8"/></svg>`;
+      return `<svg viewBox="0 0 200 200" style="width:55%"><defs><linearGradient id="g${id}" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:${c1}"/><stop offset="100%" style="stop-color:${c2}"/></linearGradient></defs><ellipse cx="100" cy="110" rx="55" ry="65" fill="url(#g${id})" stroke="${c2}" stroke-width="0.8"/></svg>`;
+    }
+
+    /* ── INIT ── */
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadProducts();
+      /* Check URL hash for sleep edit deep link */
+      if (window.location.hash === '#sleep-edit') {
+        activeCategory = 'Sleep Edit';
+        document.querySelectorAll('.cat-tab').forEach(t => {
+          t.classList.toggle('active', t.dataset.cat === 'Sleep Edit');
+        });
+      }
+      renderGrid();
+    });
+  </script>
+</body>
+</html>
